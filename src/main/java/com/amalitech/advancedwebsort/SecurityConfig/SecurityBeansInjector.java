@@ -41,7 +41,9 @@ public class SecurityBeansInjector {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/api/v1/auth/**").permitAll()
-                            .anyRequest().permitAll();
+                            .requestMatchers("api/v1/sorting/sort").hasAnyAuthority("ANY")
+                            .requestMatchers("api/v1/products/**").hasAnyAuthority("ANY")
+                            .anyRequest().authenticated();
                 });
         return httpSecurity.build();
     }

@@ -1,20 +1,19 @@
 package com.amalitech.advancedwebsort.Service;
-
 import com.amalitech.advancedwebsort.Requests.SortRequest;
 import com.amalitech.advancedwebsort.Enums.SortTypeEnums;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SortingServiceImpl implements SortingService {
     private final ParsingService parsingService;
 
-    public List<?> Sorting(SortRequest sortRequest) {
+    public String Sorting(SortRequest sortRequest) {
         SortTypeEnums sortTypeEnums = SortTypeEnums.convertFromString(sortRequest.sortType());
         return switch (sortTypeEnums) {
             case HEAP_SORT -> Heapsort(sortRequest);
@@ -25,7 +24,7 @@ public class SortingServiceImpl implements SortingService {
         };
     }
 
-    public List<int[]> Heapsort(SortRequest sortRequest) {
+    public String Heapsort(SortRequest sortRequest) {
         int[] arrayPassed = parsingService.IntParser(sortRequest);
         int n = arrayPassed.length;
         for (int i = n / 2 - 1; i >= 0; i--) {
@@ -39,7 +38,7 @@ public class SortingServiceImpl implements SortingService {
 
             heapify(arrayPassed, i, 0);
         }
-        return List.of(arrayPassed);
+        return  Arrays.stream(arrayPassed).mapToObj(String::valueOf).collect(Collectors.joining(","));
     }
 
     private void heapify(int[] arr, int n, int i) {
@@ -61,11 +60,11 @@ public class SortingServiceImpl implements SortingService {
         }
     }
 
-    public List<int[]> mergeSort(SortRequest sortRequest) {
+    public String  mergeSort(SortRequest sortRequest) {
         int[] arrayPassed = parsingService.IntParser(sortRequest);
 
         if (arrayPassed.length <= 1) {
-            return List.of(arrayPassed);
+            return Arrays.toString(arrayPassed);
         }
 
         int mid = arrayPassed.length / 2;
@@ -77,7 +76,7 @@ public class SortingServiceImpl implements SortingService {
         mergeSortHelper(left);
         mergeSortHelper(right);
         merge(arrayPassed, left, right);
-        return List.of(arrayPassed);
+        return Arrays.stream(arrayPassed).mapToObj(String::valueOf).collect(Collectors.joining(","));
     }
 
     private void mergeSortHelper(int[] arr) {
@@ -118,10 +117,10 @@ public class SortingServiceImpl implements SortingService {
         }
     }
 
-    public List<int[]> Quicksort(SortRequest sortRequest) {
+    public String Quicksort(SortRequest sortRequest) {
         int[] arrayPassed = parsingService.IntParser(sortRequest);
         quickSortHelper(arrayPassed, 0, arrayPassed.length - 1);
-        return List.of(arrayPassed);
+        return Arrays.stream(arrayPassed).mapToObj(String::valueOf).collect(Collectors.joining(","));
     }
 
     private void quickSortHelper(int[] arr, int low, int high) {
@@ -153,14 +152,14 @@ public class SortingServiceImpl implements SortingService {
         arr[j] = temp;
     }
 
-    public List<int[]> RadixSort(SortRequest sortRequest) {
+    public String RadixSort(SortRequest sortRequest) {
         int[] arrayPassed = parsingService.IntParser(sortRequest);
         int max = getMax(arrayPassed);
 
         for (int place = 1; max / place > 0; place *= 10) {
             countingSort(arrayPassed, place);
         }
-        return List.of(arrayPassed);
+        return Arrays.stream(arrayPassed).mapToObj(String::valueOf).collect(Collectors.joining(","));
     }
 
     private void countingSort(int[] arr, int place) {
@@ -193,7 +192,7 @@ public class SortingServiceImpl implements SortingService {
         return max;
     }
 
-    public List<Float> bucketSort(SortRequest sortRequest) {
+    public  String bucketSort(SortRequest sortRequest) {
         float[] arrayPassed = parsingService.floatParser(sortRequest);
         int n = arrayPassed.length;
 
@@ -218,7 +217,7 @@ public class SortingServiceImpl implements SortingService {
             sortedList.addAll(bucket);
         }
 
-        return sortedList;
+        return sortedList.stream().map(String::valueOf).collect(Collectors.joining(","));
     }
 
     private float getMax(float[] array) {

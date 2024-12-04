@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,9 +33,8 @@ public class User implements UserDetails, Principal {
     private  boolean isEnabled;
      @Override
      public Collection<? extends GrantedAuthority> getAuthorities() {
-          return List.of();
+          return Collections.singleton(new SimpleGrantedAuthority("ANY"));
      }
-
      @Override
      public String getPassword() {
           return password;

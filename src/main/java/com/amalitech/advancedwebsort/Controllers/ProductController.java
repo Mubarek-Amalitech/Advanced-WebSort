@@ -30,15 +30,16 @@ public class ProductController {
      public CollectionModel<EntityModel<Product>> getAll() {
         List<EntityModel<Product>> products = productService.getAllProducts().stream().map(product -> EntityModel.of(product,
                 linkTo(methodOn(ProductController.class).getAll()).withSelfRel(),
+                linkTo(methodOn(ProductController.class).deleteProduct(product.getProductId())).withRel("/delete-product/{productId}"),
                 linkTo(methodOn(ProductController.class).getProduct(product.getProductId())).withRel("single-product/{productId}"),
-                linkTo(methodOn(ProductController.class).getAll()).withRel("get-all"))).toList();
-        //linkTo(methodOn(ProductController.class).deleteProduct(productRequest.productId())).withRel("delete-product");
+                linkTo(methodOn(ProductController.class).getAll()).withRel("get-all"))).
+                toList();
+
         return CollectionModel.of(products, linkTo(methodOn(ProductController.class).getAll()).withSelfRel());
     }
 
    public @PatchMapping("/update-product")
     EntityModel<Product> updateProduct ( @ RequestBody ProductRequest productRequest) {
-
         return EntityModel.of(productService.updateProduct(productRequest),
                 linkTo(methodOn(ProductController.class).updateProduct(productRequest)).withSelfRel(),
                 linkTo(methodOn(ProductController.class)).withRel("update-product"));

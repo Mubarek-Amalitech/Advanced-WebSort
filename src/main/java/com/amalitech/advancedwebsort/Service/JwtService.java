@@ -1,13 +1,9 @@
 package com.amalitech.advancedwebsort.Service;
-import com.amalitech.advancedwebsort.SecurityConfig.JwtKeyConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +33,6 @@ public class JwtService {
     }
 
     private SecretKey generateKey() {
-        System.out.println(key+" this is it");
         byte[] secretKey= Decoders.BASE64.decode(key);
 
         return Keys.hmacShaKeyFor(secretKey);
@@ -62,5 +57,10 @@ public class JwtService {
 
     private Date extractExpiration(String token) {
         return extractClaim(token,Claims::getExpiration);
+    }
+
+    public boolean isValidToken(String token, UserDetails userDetails) {
+         String username=  this.extractUsername(token);
+         return username.equals(userDetails.getUsername()) && this.IsNotExpired(token);
     }
 }

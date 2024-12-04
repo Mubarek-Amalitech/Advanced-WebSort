@@ -7,5 +7,5 @@ import java.util.List;
 @Service
 public interface SortingService {
 
-    public List<?> Sorting(SortRequest sortRequest);
+    public String Sorting(SortRequest sortRequest);
 }

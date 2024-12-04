@@ -8,6 +8,7 @@ import com.amalitech.advancedwebsort.Response.AuthenticationResponse;
 import com.amalitech.advancedwebsort.SecurityConfig.SecurityBeansInjector;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.type.descriptor.java.ObjectJavaType;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
@@ -53,6 +55,11 @@ public class AuthenticationService {
         Optional<User> optionalUser=  userRepository.findByEmail(request.email());
         if (optionalUser.isPresent()){
             throw  new RuntimeException("user already exits");
+        }
+
+        if (!Objects.equals(request.password(), request.confirmPassword())) {
+
+             throw new IllegalArgumentException("password and confirm password are nto equal");
         }
        User user= User.builder().username(request.username()).email(request.email()).password(passwordEncoder.encode(request.password())) .isEnabled(true).build();
          userRepository.save(user);

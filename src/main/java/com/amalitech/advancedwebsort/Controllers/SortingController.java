@@ -16,7 +16,6 @@ public class SortingController {
     @PostMapping("/sort")
     public ResponseEntity<?> Sort( @RequestBody  SortRequest request) {
          return  ResponseEntity.ok().body(sortingService.Sorting(request));
-
     }
 
 
